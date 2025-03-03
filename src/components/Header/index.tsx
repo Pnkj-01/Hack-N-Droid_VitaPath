@@ -1,13 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { ProfileAvatar } from './ProfileAvatar';
+import type { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import { Avatar } from '../Avatar';
 
 export function Header(props: NativeStackHeaderProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{props.route.name}</Text>
-      <ProfileAvatar />
+      <Avatar />
     </View>
   );
 }

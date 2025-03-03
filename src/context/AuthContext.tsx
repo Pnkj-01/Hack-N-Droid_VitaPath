@@ -1,76 +1,20 @@
-import React, { createContext, useContext, useState } from 'react';
-import type { ReactNode, User } from '../types';
-import { supabase } from '../services/supabase';
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-interface AuthContextType {
+interface User {
+  id: string;
+  email: string;
+  avatar_url?: string;
+}
+
+interface AuthContextData {
   user: User | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (data: User) => Promise<void>;
   signOut: () => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  React.useEffect(() => {
-    // Check active sessions and sets the user
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    // Listen for changes on auth state (signed in, signed out, etc.)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-    if (error) throw error;
-  };
-
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) throw error;
-  };
-
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
-  };
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        signIn,
-        signOut,
-        signUp,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
-}
+export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export function useAuth() {
   const context = useContext(AuthContext);
@@ -78,4 +22,38 @@ export function useAuth() {
     throw new Error('useAuth must be used within AuthProvider');
   }
   return context;
-} 
+}
+
+export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  const loadUser = async () => {
+    try {
+      const data = await AsyncStorage.getItem('@SafetyApp:user');
+      if (data) setUser(JSON.parse(data));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signIn = async (data: User) => {
+    await AsyncStorage.setItem('@SafetyApp:user', JSON.stringify(data));
+    setUser(data);
+  };
+
+  const signOut = async () => {
+    await AsyncStorage.removeItem('@SafetyApp:user');
+    setUser(null);
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, loading, signIn, signOut }}>
+      {children}
+    </AuthContext.Provider>
+  );
+}

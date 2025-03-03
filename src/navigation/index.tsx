@@ -3,7 +3,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useAuthContext } from '../context/AuthContext';
+import { useAppAuth } from '../services/auth';
+import { CustomHeader } from '../components/CustomHeader';
+import { useAuth } from '../context/AuthContext';
 
 // Screens
 import { AuthScreen } from '../screens/AuthScreen';
@@ -21,7 +23,7 @@ const Stack = createNativeStackNavigator();
 
 function GroupStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: true }}>
       <Stack.Screen name="Groups" component={GroupScreen} />
       <Stack.Screen name="GroupMap" component={GroupMapScreen} />
       <Stack.Screen name="GroupChat" component={GroupChatScreen} />
@@ -48,6 +50,7 @@ function MainTabs() {
         component={GroupStack}
         options={{
           title: 'Groups',
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="account-group" size={size} color={color} />
           ),
@@ -66,25 +69,30 @@ function MainTabs() {
   );
 }
 
-export function Navigation() {
-  const { user } = useAuthContext();
+function RootNavigation() {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          header: (props) => <Header {...props} />,
+          header: (props) => <CustomHeader {...props} />,
+          headerShown: true
         }}
       >
         {user ? (
-          <Stack.Screen
-            name="Main"
+          <Stack.Screen 
+            name="MainApp" 
             component={MainTabs}
             options={{ headerShown: false }}
           />
         ) : (
-          <Stack.Screen
-            name="Auth"
+          <Stack.Screen 
+            name="Auth" 
             component={AuthScreen}
             options={{ headerShown: false }}
           />
@@ -92,4 +100,6 @@ export function Navigation() {
       </Stack.Navigator>
     </NavigationContainer>
   );
-} 
+}
+
+export default RootNavigation;
