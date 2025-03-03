@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 
+// Make sure the export is default
 export default function LandingPage() {
   return (
     <View style={styles.container}>

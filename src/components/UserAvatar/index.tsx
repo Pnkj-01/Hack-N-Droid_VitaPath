@@ -1,10 +1,10 @@
 import React from 'react';
 import { Image, StyleSheet } from 'react-native';
-import { useAppAuth } from '../../hooks/useAppAuth';
+import { useAuth } from '../../hooks/useAuth';
 
 export function UserAvatar() {
-  const { user } = useAppAuth();
-  
+  const { user } = useAuth();
+
   return (
     <Image
       source={
@@ -12,13 +12,13 @@ export function UserAvatar() {
           ? { uri: user.avatar_url }
           : require('../../assets/default.png')
       }
-      style={styles.container}
+      style={styles.image}
     />
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  image: {
     width: 32,
     height: 32,
     borderRadius: 16,

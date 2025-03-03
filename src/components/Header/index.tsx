@@ -1,13 +1,21 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import type { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { Avatar } from '../Avatar';
+import { View, Text, StyleSheet, Platform } from 'react-native';
+import { UserAvatar } from '../UserAvatar';
 
-export function Header(props: NativeStackHeaderProps) {
+interface HeaderProps {
+  title?: string;
+  route?: { name: string };
+}
+
+export function Header({ title, route }: HeaderProps) {
+  const displayTitle = title || route?.name || 'SafeCity';
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{props.route.name}</Text>
-      <Avatar />
+    <View style={[styles.container, Platform.OS === 'web' && styles.webContainer]}>
+      <Text style={[styles.title, Platform.OS === 'web' && styles.webTitle]}>
+        {displayTitle}
+      </Text>
+      <UserAvatar />
     </View>
   );
 }
@@ -21,9 +29,21 @@ const styles = StyleSheet.create({
     height: 56,
     backgroundColor: '#fff',
     elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  webContainer: {
+    backgroundColor: '#1a73e8',
+    height: 64,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  webTitle: {
+    color: '#fff',
+    fontSize: 24,
   }
 });

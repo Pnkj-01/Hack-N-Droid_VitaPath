@@ -1,8 +1,13 @@
 {
-  "buildCommand": "npm run vercel-build",
-  "outputDirectory": "web-build",
-  "framework": "react",
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/expo"
+    }
+  ],
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/" }
   ]
 }
