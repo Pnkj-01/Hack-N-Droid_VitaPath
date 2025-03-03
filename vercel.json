@@ -3,11 +3,12 @@
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/expo"
+      "use": "@vercel/static-build",
+      "config": { "distDir": "web-build" }
     }
   ],
   "routes": [
     { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/" }
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
