@@ -2,22 +2,14 @@
   "name": "safecity",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
+  "type": "module",
   "scripts": {
+    "dev": "expo start --web",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "build:web": "expo export:web",
-    "predeploy": "expo export:web",
-    "deploy": "vercel deploy --prod"
-  },
-  "dependencies": {
-    "@expo/vector-icons": "^14.0.4",
-    "@react-native-async-storage/async-storage": "^2.1.2",
-    "@react-navigation/bottom-tabs": "^6.6.1",
-    "@react-navigation/native": "^6.1.18",
-    "@react-navigation/native-stack": "^6.11.0",
-    "react-native-safe-area-context": "^5.2.0",
-    "react-native-screens": "^4.9.1"
+    "build": "expo export:web",
+    "vercel-build": "expo export:web"
   }
 }
