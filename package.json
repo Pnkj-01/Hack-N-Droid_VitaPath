@@ -22,12 +22,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "build": "npx expo export:web",
-    "vercel-build": "npx expo export:web"
-  },
-  "devDependencies": {
-    "@expo/config": "^10.0.10",
-    "typescript": "^5.8.2",
-    "webpack-cli": "^6.0.1"
+    "build": "webpack --config webpack.config.js",
+    "vercel-build": "webpack --config webpack.config.js"
   }
 }
